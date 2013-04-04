@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html ng-app>
+  <head>
+    <meta charset="utf-8" />
+    <script src="xml2json.js"></script>
+    <script>
+      //[].concat.apply([],
+      function LastFmCalendar($scope, $http) {
+        $scope.getEvents = function (venueId) {
+          return $http.get(
+            'http://ws.audioscrobbler.com/2.0/',
+            {
+              headers: {
+                'Accept': 'application/xml',
+              },
+              params: {
+                method: 'venue.getEvents',
+                venue: venueId,
+                api_key: '6a784d8c155badb9591723ef67d17478',
+              },
+              transformResponse: function(data) {
+                //console.log(x2js.xml_str2json(data));
+                //console.log(x2js.xml_str2json(data).lfm.events.event);
+                return x2js.xml_str2json(data);
+              },
+            }
+          ).then(function(lastfm) {
+            //console.log(lastfm.data.lfm.events.event);
+            return lastfm.data.lfm.events.event;
+          });
+        };
+        $scope.weekender = $scope.getEvents(8786461);//.success(function(d) {console.log(d);});
+      }
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
+    <style>
+    </style>
+  </head>
+  <body ng-controller="LastFmCalendar">
+    <div ng-repeat="e in weekender">
+      {{e.startDate}} – {{e.title}}
+    </div>
+  </body>
+</html>
+
