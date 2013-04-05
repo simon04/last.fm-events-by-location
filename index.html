@@ -2,7 +2,6 @@
 <html ng-app>
   <head>
     <meta charset="utf-8" />
-    <script src="xml2json.js"></script>
     <script>
       function LastFmCalendar($scope, $http) {
 
@@ -20,13 +19,11 @@
             distance: $scope.distance,
             limit: 200,
             api_key: '6a784d8c155badb9591723ef67d17478',
-          },
-          transformResponse: function(data) {
-            return x2js.xml_str2json(data);
+            format: 'json',
           },
         }
         ).then(function(lastfm) {
-          return lastfm.data.lfm.events.event;
+          return lastfm.data.events.event;
         });
 
         $scope.getDate = function(date) {
@@ -72,7 +69,7 @@
           <td>{{getDate(e.startDate)|date:"EEEE"}}</td>
           <td><a ng-href="{{e.url}}">{{getDate(e.startDate)|date:"yyyy-MM-dd"}}</a></td>
           <td><a ng-href="{{e.venue.url}}">{{e.venue.name}}</a></td>
-          <td>{{join(e.artists.artist_asArray)}}</td>
+          <td>{{join(e.artists.artist)}}</td>
           <!--<td><img ng-src="{{e.image[1].__text}}"></td>-->
         </tr>
       </table>
