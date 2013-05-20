@@ -147,8 +147,12 @@
                 </b>
               </a>
             </p>
-            <ul ng-hide="e.title == e.artists.artist" ng-repeat="artist in asArray(e.artists.artist)">
-              <li>{{artist}}</li>
+            <ul ng-repeat="artist in asArray(e.artists.artist)">
+              <li>
+                <a href="http://www.last.fm/music/{{artist}}">
+                  {{artist}}
+                </a>
+              </li>
             </ul>
           </td>
         </tr>
