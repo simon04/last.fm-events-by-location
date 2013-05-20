@@ -33,6 +33,23 @@
         };
         $scope.updateEvents();
 
+        $scope.filterList = function(events) {
+          _.mixin({
+            pluckArray: function(obj, key) {
+              return _.map(obj, function(value){
+               return _.reduce(key, function(v, k){
+                return v[k]; 
+              }, value)
+             })
+            }
+          });
+
+          var venues = _.chain(events).pluckArray(['venue', 'name']).value();
+          var artists = _.chain(events).pluckArray(['artists', 'artist']).flatten().value();
+          var titles = _.chain(events).pluckArray(['title']).flatten().value();
+          return _.unique(_.union(venues, artists, titles));
+        };
+
         $scope.humanize = function(date) {
           moment.lang('en', {
             calendar : {
@@ -56,6 +73,7 @@
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js"></script>
+    <script src="https:////cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css" />
     <style>
@@ -89,11 +107,14 @@
             <input ng-model="location" type="text" class="input-xlarge search-query" placeholder="Location" title="Location">
             <input ng-model="distance" type="number" class="input-mini search-query" title="Distance (in kilometers)">
             <button type="submit" class="btn">Update Events</button>
-            <input ng-model="filter" type="search" class="input-medium search-query" placeholder="Filter" title="Filter" class="btn">
+            <input ng-model="filter" type="search" class="input-medium search-query" placeholder="Filter" title="Filter" class="btn" list="filterList">
           </form>
         </div>
       </div>
     </div>
+    <datalist id="filterList">
+      <option ng-repeat="i in filterList(events)" value="{{i}}"/>
+    </datalist>
     <div class="container-fluid">
       <table class="table table-striped">
         <tr>
