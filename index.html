@@ -63,6 +63,10 @@
         height: 87px !important;
         overflow: hidden;
       }
+      .cancelled td {
+        text-decoration: line-through;
+        opacity: 0.5;
+      }
     </style>
   </head>
   <body ng-controller="LastFmCalendar">
@@ -87,9 +91,10 @@
         <tr>
           <th>Date</th>
           <th>Venue</th>
-          <th colspan="2">Event and Artists</th>
+          <th></th>
+          <th>Event and Artists</th>
         </tr>
-        <tr ng-repeat="e in events | filter:filter">
+        <tr ng-repeat="e in events | filter:filter" ng-class="{cancelled:e.cancelled==1}">
           <td>
             <time datetime="{{moment(e.startDate).format()}}">
               {{humanize(e.startDate)}}
