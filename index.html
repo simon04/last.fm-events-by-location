@@ -26,20 +26,29 @@
           return lastfm.data.events.event;
         });
 
-        $scope.getDate = function(date) {
-          return new Date(date);
-        }
+        $scope.humanize = function(date) {
+          moment.lang('en', {
+            calendar : {
+              lastWeek : '[last] dddd [at] LT',
+              lastDay : '[Yesterday at] LT',
+              sameDay : '[Today]',
+              nextDay : '[Tomorrow]',
+              nextWeek : '[On] dddd',
+              sameElse : 'LL'
+            }
+          });
+          return moment(date).calendar();
+        };
 
         $scope.asArray = function(x) {
           return Array.isArray(x) ? x : [x];
-        }
+        };
 
-        $scope.join = function(list) {
-          return Array.isArray(list) ? list.join(', ') : list;
-        }
+        $scope.moment = moment;
       }
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js"></script>
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css" />
     <style>
@@ -76,15 +85,14 @@
     <div class="container-fluid">
       <table class="table table-striped">
         <tr>
-          <th colspan="2">Date</th>
+          <th>Date</th>
           <th>Venue</th>
           <th colspan="2">Event and Artists</th>
         </tr>
         <tr ng-repeat="e in events | filter:filter">
-          <td>{{getDate(e.startDate)|date:"EEE"}}</td>
           <td>
-            <time>
-              {{getDate(e.startDate)|date:"yyyy-MM-dd"}}
+            <time datetime="{{moment(e.startDate).format()}}">
+              {{humanize(e.startDate)}}
             </time>
           </td>
           <td>
