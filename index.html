@@ -7,24 +7,31 @@
 
         $scope.location = 'Innsbruck, Austria';
         $scope.distance = 20;
-        $scope.events = $http.get(
-        'http://ws.audioscrobbler.com/2.0/',
-        {
-          headers: {
-            'Accept': 'application/xml',
-          },
-          params: {
-            method: 'geo.getEvents',
-            location: $scope.location,
-            distance: $scope.distance,
-            limit: 200,
-            api_key: '6a784d8c155badb9591723ef67d17478',
-            format: 'json',
-          },
-        }
-        ).then(function(lastfm) {
-          return lastfm.data.events.event;
-        });
+
+        $scope.getEvents = function() {
+          return $http.get('http://ws.audioscrobbler.com/2.0/',
+            {
+              headers: {
+                'Accept': 'application/xml',
+              },
+              params: {
+                method: 'geo.getEvents',
+                location: $scope.location,
+                distance: $scope.distance,
+                limit: 200,
+                api_key: '6a784d8c155badb9591723ef67d17478',
+                format: 'json',
+              },
+            }
+            ).then(function(lastfm) {
+              return lastfm.data.events.event;
+            });
+          };
+
+        $scope.updateEvents = function() {
+          $scope.events = $scope.getEvents();
+        };
+        $scope.updateEvents();
 
         $scope.humanize = function(date) {
           moment.lang('en', {
@@ -78,10 +85,11 @@
           </a>
         </span>
         <div class="container">
-          <form class="navbar-form form-search">
-            <input ng-model="location" type="text" class="input-xlarge search-query" placeholder="Location">
-            <input ng-model="distance" type="number" class="input-small search-query">
-            <input ng-model="filter" type="search" class="input-medium search-query" placeholder="Filter">
+          <form class="navbar-form form-search" ng-submit="updateEvents()">
+            <input ng-model="location" type="text" class="input-xlarge search-query" placeholder="Location" title="Location">
+            <input ng-model="distance" type="number" class="input-small search-query" title="Distance (in kilometers)">
+            <button type="submit" class="btn">Update Events</button>
+            <input ng-model="filter" type="search" class="input-medium search-query" placeholder="Filter" title="Filter" class="btn">
           </form>
         </div>
       </div>
