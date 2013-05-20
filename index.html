@@ -30,6 +30,10 @@
           return new Date(date);
         }
 
+        $scope.asArray = function(x) {
+          return Array.isArray(x) ? x : [x];
+        }
+
         $scope.join = function(list) {
           return Array.isArray(list) ? list.join(', ') : list;
         }
@@ -39,6 +43,17 @@
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css" />
     <style>
+      time {
+        white-space: nowrap;
+      }
+      img.thumb {
+        max-width: none !important;
+        width: auto !important;
+      }
+      .crop {
+        height: 87px !important;
+        overflow: hidden;
+      }
     </style>
   </head>
   <body ng-controller="LastFmCalendar">
@@ -63,16 +78,39 @@
         <tr>
           <th colspan="2">Date</th>
           <th>Venue</th>
-          <th>Artists</th>
+          <th colspan="2">Event and Artists</th>
         </tr>
         <tr ng-repeat="e in events | filter:filter">
-          <td>{{getDate(e.startDate)|date:"EEEE"}}</td>
-          <td><a ng-href="{{e.url}}">{{getDate(e.startDate)|date:"yyyy-MM-dd"}}</a></td>
-          <td><a ng-href="{{e.venue.url}}">{{e.venue.name}}</a></td>
-          <td>{{join(e.artists.artist)}}</td>
-          <!--<td><img ng-src="{{e.image[1].__text}}"></td>-->
+          <td>{{getDate(e.startDate)|date:"EEE"}}</td>
+          <td>
+            <time>
+              {{getDate(e.startDate)|date:"yyyy-MM-dd"}}
+            </time>
+          </td>
+          <td>
+            <a ng-show="e.website" ng-href="{{e.website}}">{{e.venue.name}}</a>
+            <span ng-show="!e.website">{{e.venue.name}}</span>
+          </td>
+          <td>
+            <div class="crop">
+              <img class="thumb" ng-src="{{e.image[2]['#text']}}">
+            </div>
+          </td>
+          <td>
+            <p>
+              <a href="{{e.url}}">
+                <b>
+                  {{e.title}}
+                </b>
+              </a>
+            </p>
+            <ul ng-hide="e.title == e.artists.artist" ng-repeat="artist in asArray(e.artists.artist)">
+              <li>{{artist}}</li>
+            </ul>
+          </td>
         </tr>
       </table>
+    </div>
   </body>
 </html>
 
