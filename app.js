@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 angular.module('LastFm', []).config(['$routeProvider', function($routeProvider) {
   $routeProvider.
@@ -37,11 +37,11 @@ function LastFmCalendar($scope, $routeParams, $http, $location) {
   $scope.filterList = function(events) {
     _.mixin({
       pluckArray: function(obj, key) {
-        return _.map(obj, function(value){
-         return _.reduce(key, function(v, k){
-          return v[k]; 
-        }, value)
-       })
+        return _.map(obj, function(value) {
+         return _.reduce(key, function(v, k) {
+          return v[k];
+        }, value);
+       });
       }
     });
 
