@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html ng-app>
+<html ng-app="LastFm">
   <head>
     <meta charset="utf-8" />
     <title>Last.fm Events by Location</title>
@@ -27,69 +27,8 @@
       }
     </style>
   </head>
-  <body ng-controller="LastFmCalendar">
-    <div class="navbar">
-      <div class="navbar-inner">
-        <span class="brand">
-          <a href="http://last.fm/">
-            <img src="http://cdn.last.fm/flatness/badges/lastfm_red_small.gif">
-          </a>
-        </span>
-        <div class="container">
-          <form class="navbar-form form-search" ng-submit="updateEvents()">
-            <input ng-model="location" type="text" class="input-xlarge search-query" placeholder="Location" title="Location">
-            <input ng-model="distance" type="number" class="input-mini search-query" title="Distance (in kilometers)">
-            <button type="submit" class="btn">Update Events</button>
-            <input ng-model="filter" type="search" class="input-medium search-query" placeholder="Filter" title="Filter" class="btn" list="filterList">
-          </form>
-        </div>
-      </div>
-    </div>
-    <datalist id="filterList">
-      <option ng-repeat="i in filterList(events)" value="{{i}}"/>
-    </datalist>
-    <div class="container-fluid">
-      <table class="table table-striped">
-        <tr>
-          <th>Date</th>
-          <th>Venue</th>
-          <th></th>
-          <th>Event and Artists</th>
-        </tr>
-        <tr ng-repeat="e in events | filter:filter" ng-class="{cancelled:e.cancelled==1}">
-          <td>
-            <time datetime="{{moment(e.startDate).format()}}">
-              {{humanize(e.startDate)}}
-            </time>
-          </td>
-          <td>
-            <a ng-show="e.website" ng-href="{{e.website}}">{{e.venue.name}}</a>
-            <span ng-show="!e.website">{{e.venue.name}}</span>
-          </td>
-          <td>
-            <div class="crop">
-              <img class="thumb" ng-src="{{e.image[2]['#text']}}">
-            </div>
-          </td>
-          <td>
-            <p>
-              <a href="{{e.url}}">
-                <b>
-                  {{e.title}}
-                </b>
-              </a>
-            </p>
-            <ul ng-repeat="artist in asArray(e.artists.artist)">
-              <li>
-                <a href="http://www.last.fm/music/{{artist}}">
-                  {{artist}}
-                </a>
-              </li>
-            </ul>
-          </td>
-        </tr>
-      </table>
-    </div>
+  <body>
+    <div ng-view></div>
   </body>
 </html>
 
