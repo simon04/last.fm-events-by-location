@@ -1,6 +1,8 @@
 'use strict';
 
-angular.module('LastFm', []).config(['$routeProvider', function($routeProvider) {
+var lastFm = angular.module('LastFm', ['ngRoute']);
+
+lastFm.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
   when('/events/:location', {redirectTo: '/events/:location/20'}).
   when('/events/:location/:distance', {templateUrl: 'events.html', controller: LastFmCalendar}).
@@ -13,21 +15,21 @@ function LastFmCalendar($scope, $routeParams, $http, $location) {
   $scope.location = $routeParams.location;
   $scope.distance = $routeParams.distance;
 
-  $scope.events = $http.get('http://ws.audioscrobbler.com/2.0/', {
+  $http.get('http://ws.audioscrobbler.com/2.0/', {
     headers: {
       'Accept': 'application/xml'
     },
+    cache: true,
     params: {
       method: 'geo.getEvents',
       location: $scope.location,
       distance: $scope.distance,
       limit: 200,
       api_key: '6a784d8c155badb9591723ef67d17478',
-      format: 'json',
-      cache: true
+      format: 'json'
     }
   }).then(function(lastfm) {
-    return lastfm.data.events.event;
+    $scope.events = lastfm.data.events.event;
   });
 
   $scope.path = function(path) {
