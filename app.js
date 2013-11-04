@@ -18,6 +18,7 @@ lastFm.directive('miniCalendar', function() {
     templateUrl: 'mini-calendar.html',
     controller: function($scope) {
       $scope.datem = moment.utc($scope.date);
+      $scope.today = moment.utc().startOf('day');
       $scope.weeks = _.range(
         moment.utc($scope.date).startOf('month').startOf('week').unix(),
         moment.utc($scope.date).endOf('month').startOf('week').unix() + 1,
@@ -27,11 +28,10 @@ lastFm.directive('miniCalendar', function() {
       });
 
       $scope.getDateClasses = function(d1, d2) {
-        console.log(d1.startOf('day').format(), d2.startOf('day').format());
         return {
           'date-othermonth': d1.month() !== d2.month(),
           'date-sameday': d1.startOf('day').unix() === d2.startOf('day').unix(),
-          'date-today': d1.startOf('day').unix() === moment.utc().startOf('day').unix()
+          'date-today': d1.startOf('day').unix() === $scope.today.unix()
         };
       };
     }
