@@ -24,13 +24,12 @@
   <table class="table table-striped">
     <tr>
       <th>Date</th>
-      <th ng-show="minical">Calendar</th>
       <th>Venue</th>
       <th></th>
       <th>Event and Artists</th>
     </tr>
     <tr ng-repeat="e in events | filter:filter" ng-class="{cancelled:e.cancelled==1}">
-      <td>
+      <td ng-hide="minical">
         <time datetime="{{moment(e.startDate).format()}}">
           {{humanize(e.startDate)}}
         </time>

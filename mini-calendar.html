@@ -1,4 +1,14 @@
 <table class="table table-condensed minical">
+  <tr>
+    <th colspan="7" style="text-align: center">
+      {{datem.format('MMMM YYYY')}}
+    </th>
+  </tr>
+  <tr data-ng-repeat="w in weeks | limitTo:1">
+    <th data-ng-repeat="d in w" title="{{d.format('dddd, MMMM YYYY')}}">
+      {{d.format('dd')}}
+    </th>
+  </tr>
   <tr data-ng-repeat="w in weeks">
     <td data-ng-repeat="d in w" title="{{d.format('dddd, LL')}}" data-ng-class="{{getDateClasses(d, datem)}}">
       {{d.format('D')}}
