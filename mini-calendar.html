@@ -1,0 +1,7 @@
+<table class="table table-condensed minical">
+  <tr data-ng-repeat="w in weeks">
+    <td data-ng-repeat="d in w" title="{{d.format('dddd, LL')}}" data-ng-class="{{getDateClasses(d, datem)}}">
+      {{d.format('D')}}
+    </td>
+  </tr>
+</table>

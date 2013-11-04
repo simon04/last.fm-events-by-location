@@ -9,6 +9,34 @@ lastFm.config(['$routeProvider', function($routeProvider) {
   otherwise({redirectTo: '/events/Innsbruck'});
 }]);
 
+lastFm.directive('miniCalendar', function() {
+  'use strict';
+  return {
+    scope: {
+      date: '=ngDate'
+    },
+    templateUrl: 'mini-calendar.html',
+    controller: function($scope) {
+      $scope.datem = moment.utc($scope.date);
+      $scope.weeks = _.range(
+        moment.utc($scope.date).startOf('month').startOf('week').unix(),
+        moment.utc($scope.date).endOf('month').startOf('week').unix() + 1,
+        86400 * 7
+      ).map(function(w) {
+        return _.range(w, w + 86400 * 7, 86400).map(moment.unix).map(moment.utc);
+      });
+
+      $scope.getDateClasses = function(d1, d2) {
+        console.log(d1.startOf('day').format(), d2.startOf('day').format());
+        return {
+          'date-othermonth': d1.month() !== d2.month(),
+          'date-sameday': d1.startOf('day').unix() === d2.startOf('day').unix(),
+          'date-today': d1.startOf('day').unix() === moment.utc().startOf('day').unix()
+        };
+      };
+    }
+  };
+});
 
 function LastFmCalendar($scope, $routeParams, $http, $location) {
 

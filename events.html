@@ -11,6 +11,7 @@
         <input ng-model="distance" type="text" class="input-mini search-query" title="Distance (in kilometers)">
         <button type="submit" class="btn">Update Events</button>
         <input ng-model="filter" type="search" class="input-medium search-query" placeholder="Filter" title="Filter" class="btn" list="filterList">
+        <button class="btn" ng-class="{active: !!minical}" ng-click="minical = !minical">MiniCal</button>
         <button class="btn" ng-class="{active: !!minimap}" ng-click="minimap = !minimap">MiniMap</button>
       </form>
     </div>
@@ -23,6 +24,7 @@
   <table class="table table-striped">
     <tr>
       <th>Date</th>
+      <th ng-show="minical">Calendar</th>
       <th>Venue</th>
       <th></th>
       <th>Event and Artists</th>
@@ -32,6 +34,9 @@
         <time datetime="{{moment(e.startDate).format()}}">
           {{humanize(e.startDate)}}
         </time>
+      </td>
+      <td ng-show="minical">
+        <div mini-calendar ng-date="e.startDate"></div>
       </td>
       <td>
         <img ng-show="minimap" ng-src="http://api.tiles.mapbox.com/v3/examples.map-vyofok3q/pin-s-star+c00({{e.venue.location['geo:point']['geo:long']}},{{e.venue.location['geo:point']['geo:lat']}})/{{e.venue.location['geo:point']['geo:long']}},{{e.venue.location['geo:point']['geo:lat']}},14/300x200.png" style="width:150px; height:100px;"></img>
