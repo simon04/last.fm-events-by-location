@@ -45,7 +45,7 @@ function LastFmCalendar($scope, $routeParams, $http, $location) {
 
   $http.get('http://ws.audioscrobbler.com/2.0/', {
     headers: {
-      'Accept': 'application/xml'
+      'Accept': 'application/json'
     },
     cache: true,
     params: {
@@ -57,7 +57,15 @@ function LastFmCalendar($scope, $routeParams, $http, $location) {
       format: 'json'
     }
   }).then(function(lastfm) {
-    $scope.events = lastfm.data.events.event;
+    return lastfm.data.events.event;
+  }).then(function(events) {
+    return _.map(events, function(e) {
+      var a = e.artists.artist;
+      e.artistArray = Array.isArray(a) ? a : [a];
+      return e;
+    });
+  }).then(function(events) {
+    $scope.events = events;
   });
 
   $scope.path = function(path) {
@@ -93,10 +101,6 @@ function LastFmCalendar($scope, $routeParams, $http, $location) {
       }
     });
     return moment(date).calendar();
-  };
-
-  $scope.asArray = function(x) {
-    return Array.isArray(x) ? x : [x];
   };
 
   $scope.moment = moment;

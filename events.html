@@ -34,11 +34,11 @@
           {{humanize(e.startDate)}}
         </time>
       </td>
-      <td ng-show="minical">
+      <td ng-if="minical">
         <div mini-calendar ng-date="e.startDate"></div>
       </td>
       <td>
-        <img ng-show="minimap" ng-src="http://api.tiles.mapbox.com/v3/examples.map-vyofok3q/pin-s-star+c00({{e.venue.location['geo:point']['geo:long']}},{{e.venue.location['geo:point']['geo:lat']}})/{{e.venue.location['geo:point']['geo:long']}},{{e.venue.location['geo:point']['geo:lat']}},14/300x200.png" style="width:150px; height:100px;"></img>
+        <img ng-if="minimap" ng-src="http://api.tiles.mapbox.com/v3/examples.map-vyofok3q/pin-s-star+c00({{e.venue.location['geo:point']['geo:long']}},{{e.venue.location['geo:point']['geo:lat']}})/{{e.venue.location['geo:point']['geo:long']}},{{e.venue.location['geo:point']['geo:lat']}},14/300x200.png" style="width:150px; height:100px;"></img>
         <a ng-show="e.website" ng-href="{{e.website}}">{{e.venue.name}}</a>
         <span ng-show="!e.website">{{e.venue.name}}</span>
       </td>
@@ -55,7 +55,7 @@
             </b>
           </a>
         </p>
-        <ul ng-repeat="artist in asArray(e.artists.artist)">
+        <ul ng-repeat="artist in e.artistArray">
           <li>
             <a href="http://www.last.fm/music/{{artist}}">
               {{artist}}
