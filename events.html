@@ -6,7 +6,7 @@
       </a>
     </span>
     <div class="container">
-      <form class="navbar-form form-search" ng-submit="path('events/{{location}}/{{distance}}')">
+      <form class="navbar-form form-search" ng-submit="path('/events/' + location + '/' + distance)">
         <input ng-model="location" type="text" class="input-xlarge search-query" placeholder="Location" title="Location">
         <input ng-model="distance" type="text" class="input-mini search-query" title="Distance (in kilometers)">
         <button type="submit" class="btn">Update Events</button>
