@@ -38,7 +38,7 @@ lastFm.directive('miniCalendar', function() {
   };
 });
 
-function LastFmCalendar($scope, $routeParams, $http, $location) {
+function LastFmCalendar($scope, $routeParams, $http, $location, filterFilter) {
 
   $scope.location = $routeParams.location;
   $scope.distance = $routeParams.distance;
@@ -62,15 +62,23 @@ function LastFmCalendar($scope, $routeParams, $http, $location) {
     return _.map(events, function(e) {
       var a = e.artists.artist;
       e.artistArray = Array.isArray(a) ? a : [a];
+      e.startDateFormatted = moment(e.startDate).format();
+      e.startDateHumanized = moment(e.startDate).calendar();
+      e.thumb = e.image[2]['#text'];
       return e;
     });
   }).then(function(events) {
     $scope.events = events;
+    $scope.eventKeywords = $scope.filterList(events);
   });
 
   $scope.path = function(path) {
     $location.path(path);
   };
+
+  $scope.$watch('events + filter', function() {
+    $scope.filteredEvents = filterFilter($scope.events, $scope.filter);
+  });
 
   $scope.filterList = function(events) {
     _.mixin({
@@ -89,19 +97,15 @@ function LastFmCalendar($scope, $routeParams, $http, $location) {
     return _.unique(_.union(venues, artists, titles));
   };
 
-  $scope.humanize = function(date) {
-    moment.lang('en', {
-      calendar : {
-        lastWeek : '[last] dddd [at] LT',
-        lastDay : '[Yesterday at] LT',
-        sameDay : '[Today]',
-        nextDay : '[Tomorrow]',
-        nextWeek : 'dddd',
-        sameElse : 'LL'
-      }
-    });
-    return moment(date).calendar();
-  };
+  moment.lang('en', {
+    calendar : {
+      lastWeek : '[last] dddd [at] LT',
+      lastDay : '[Yesterday at] LT',
+      sameDay : '[Today]',
+      nextDay : '[Tomorrow]',
+      nextWeek : 'dddd',
+      sameElse : 'LL'
+    }
+  });
 
-  $scope.moment = moment;
 }
