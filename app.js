@@ -17,23 +17,27 @@ lastFm.directive('miniCalendar', function() {
     },
     templateUrl: 'mini-calendar.html',
     controller: function($scope) {
-      $scope.datem = moment($scope.date);
-      $scope.today = moment().startOf('day');
+      var date = moment($scope.date);
+      $scope.month = date.format('MMMM YYYY');
       $scope.weeks = _.range(
         moment($scope.date).startOf('month').startOf('week').unix(),
         moment($scope.date).endOf('month').startOf('week').unix() + 1,
         86400 * 7
       ).map(function(w) {
-        return _.range(w, w + 86400 * 7, 86400).map(moment.unix);
+        return _.range(w, w + 86400 * 7, 86400).map(moment.unix).map(function(d) {
+          var r = {
+            date: d.format('dddd, LL'),
+            day: d.format('D'),
+            weekday: d.format('dd'),
+            classes: {
+              'date-othermonth': d.month() !== date.month(),
+              'date-sameday': d.startOf('day').unix() === date.startOf('day').unix(),
+              'date-today': d.startOf('day').unix() === moment().startOf('day').unix()
+            }
+          };
+          return r;
+        });
       });
-
-      $scope.getDateClasses = function(d1, d2) {
-        return {
-          'date-othermonth': d1.month() !== d2.month(),
-          'date-sameday': d1.startOf('day').unix() === d2.startOf('day').unix(),
-          'date-today': d1.startOf('day').unix() === $scope.today.unix()
-        };
-      };
     }
   };
 });

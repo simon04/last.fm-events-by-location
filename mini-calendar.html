@@ -1,17 +1,17 @@
 <table class="table table-condensed minical">
   <tr>
     <th colspan="7" style="text-align: center">
-      {{datem.format('MMMM YYYY')}}
+      {{month}}
     </th>
   </tr>
-  <tr data-ng-repeat="w in ::weeks | limitTo:1">
-    <th data-ng-repeat="d in w" title="{{d.format('dddd, MMMM YYYY')}}">
-      <span class="minical-day-of-week">{{d.format('dd')}}</span>
+  <tr>
+    <th data-ng-repeat="d in ::weeks[0]">
+      <span class="minical-day-of-week">{{d.weekday}}</span>
     </th>
   </tr>
   <tr data-ng-repeat="w in ::weeks">
-    <td data-ng-repeat="d in w" title="{{d.format('dddd, LL')}}" data-ng-class="{{getDateClasses(d, datem)}}">
-      <span class="minical-day">{{d.format('D')}}</span>
+    <td data-ng-repeat="d in w" title="{{d.date}}" data-ng-class="d.classes">
+      <span class="minical-day">{{d.day}}</span>
     </td>
   </tr>
 </table>
