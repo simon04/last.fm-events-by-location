@@ -38,27 +38,35 @@ lastFm.directive('miniCalendar', function() {
   };
 });
 
-lastFm.controller('LastFmCalendarController', ['$scope', '$routeParams', '$http', '$location', 'filterFilter', function($scope, $routeParams, $http, $location, filterFilter) {
+lastFm.factory('eventsService', ['$http', function($http) {
+  return {
+    getEvents: function(location, distance) {
+      return $http.get('http://ws.audioscrobbler.com/2.0/', {
+        headers: {
+          'Accept': 'application/json'
+        },
+        cache: true,
+        params: {
+          method: 'geo.getEvents',
+          location: location,
+          distance: distance,
+          limit: 200,
+          api_key: '6a784d8c155badb9591723ef67d17478',
+          format: 'json'
+        }
+      }).then(function(lastfm) {
+        return lastfm.data.events.event;
+      });
+    }
+  };
+}]);
+
+lastFm.controller('LastFmCalendarController', ['$scope', '$routeParams', 'eventsService', '$location', 'filterFilter', function($scope, $routeParams, eventsService, $location, filterFilter) {
 
   $scope.location = $routeParams.location;
   $scope.distance = parseInt($routeParams.distance);
 
-  $http.get('http://ws.audioscrobbler.com/2.0/', {
-    headers: {
-      'Accept': 'application/json'
-    },
-    cache: true,
-    params: {
-      method: 'geo.getEvents',
-      location: $scope.location,
-      distance: $scope.distance,
-      limit: 200,
-      api_key: '6a784d8c155badb9591723ef67d17478',
-      format: 'json'
-    }
-  }).then(function(lastfm) {
-    return lastfm.data.events.event;
-  }).then(function(events) {
+  eventsService.getEvents($scope.location, $scope.distance).then(function(events) {
     return _.map(events, function(e) {
       var a = e.artists.artist;
       e.artistArray = Array.isArray(a) ? a : [a];
