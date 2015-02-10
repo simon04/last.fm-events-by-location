@@ -73,7 +73,28 @@ lastFm.factory('eventsService', ['$http', function($http) {
   };
 }]);
 
-lastFm.controller('LastFmCalendarController', ['$scope', '$routeParams', 'events', '$location', 'filterFilter', function($scope, $routeParams, events, $location, filterFilter) {
+lastFm.factory('eventKeywordsService', function() {
+  return {
+    getKeywords: function(events) {
+      _.mixin({
+        pluckArray: function(obj, key) {
+          return _.map(obj, function(value) {
+           return _.reduce(key, function(v, k) {
+            return v[k];
+          }, value);
+         });
+        }
+      });
+
+      var venues = _.chain(events).pluckArray(['venue', 'name']).value();
+      var artists = _.chain(events).pluckArray(['artists', 'artist']).flatten().value();
+      var titles = _.chain(events).pluckArray(['title']).flatten().value();
+      return _.unique(_.union(venues, artists, titles));
+    }
+  };
+});
+
+lastFm.controller('LastFmCalendarController', ['$scope', '$routeParams', 'events', 'eventKeywordsService', '$location', 'filterFilter', function($scope, $routeParams, events, eventKeywordsService, $location, filterFilter) {
 
   $scope.location = $routeParams.location;
   $scope.distance = parseInt($routeParams.distance);
@@ -88,7 +109,8 @@ lastFm.controller('LastFmCalendarController', ['$scope', '$routeParams', 'events
     e.thumb = e.image[2]['#text'];
     return e;
   });
-  $scope.eventKeywords = $scope.filterList($scope.events);
+
+  $scope.eventKeywords = eventKeywordsService.getKeywords($scope.events);
 
   $scope.path = function(path) {
     $location.path(path);
@@ -97,23 +119,6 @@ lastFm.controller('LastFmCalendarController', ['$scope', '$routeParams', 'events
   $scope.$watch('events + filter', function() {
     $scope.filteredEvents = filterFilter($scope.events, $scope.filter);
   });
-
-  $scope.filterList = function(events) {
-    _.mixin({
-      pluckArray: function(obj, key) {
-        return _.map(obj, function(value) {
-         return _.reduce(key, function(v, k) {
-          return v[k];
-        }, value);
-       });
-      }
-    });
-
-    var venues = _.chain(events).pluckArray(['venue', 'name']).value();
-    var artists = _.chain(events).pluckArray(['artists', 'artist']).flatten().value();
-    var titles = _.chain(events).pluckArray(['title']).flatten().value();
-    return _.unique(_.union(venues, artists, titles));
-  };
 
   moment.locale('en', {
     calendar : {
