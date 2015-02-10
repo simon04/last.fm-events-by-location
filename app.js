@@ -5,7 +5,7 @@ var lastFm = angular.module('LastFm', ['ngRoute']);
 lastFm.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
   when('/events/:location', {redirectTo: '/events/:location/20'}).
-  when('/events/:location/:distance', {templateUrl: 'events.html', controller: LastFmCalendar}).
+  when('/events/:location/:distance', {templateUrl: 'events.html', controller: 'LastFmCalendarController'}).
   otherwise({redirectTo: '/events/Innsbruck'});
 }]);
 
@@ -38,7 +38,7 @@ lastFm.directive('miniCalendar', function() {
   };
 });
 
-function LastFmCalendar($scope, $routeParams, $http, $location, filterFilter) {
+lastFm.controller('LastFmCalendarController', ['$scope', '$routeParams', '$http', '$location', 'filterFilter', function($scope, $routeParams, $http, $location, filterFilter) {
 
   $scope.location = $routeParams.location;
   $scope.distance = parseInt($routeParams.distance);
@@ -110,4 +110,4 @@ function LastFmCalendar($scope, $routeParams, $http, $location, filterFilter) {
     }
   });
 
-}
+}]);
