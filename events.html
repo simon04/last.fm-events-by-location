@@ -51,25 +51,25 @@
           <time ng-attr-datetime="::e.startDateFormatted" ng-bind="::e.startDateHumanized"></time>
           <span class="badge" ng-pluralize count="e.startDateInDays" when="{0: 'today', 1: 'tomorrow', other: 'in {} days'}"></span>
         </div>
-
         <div class="col-sm-4" ng-if="minical">
           <div mini-calendar ng-date="::e.startDate"></div>
         </div>
 
-        <div class="col-sm-3">
-          <!-- <span class="visible-xs-inline">@</span> -->
-          <a ng-if="e.website" ng-href="::e.website" ng-bind="::e.venue.name"></a>
-          <span ng-if="e.website" class="glyphicon glyphicon-new-window small"></span>
-          <span ng-if="!e.website" ng-bind="::e.venue.name"></span>
+        <div class="col-sm-3" ng-if="e.website">
+          <a ng-href="{{::e.website}}" ng-bind="::e.venue.name"></a>
+          <span class="glyphicon glyphicon-new-window small"></span>
+        </div>
+        <div class="col-sm-3" ng-if="!e.website">
+          <span ng-bind="::e.venue.name"></span>
         </div>
 
         <div class="col-sm-5">
-          <a ng-href="::e.url">
+          <a ng-href="{{::e.url}}">
             <b ng-bind="::e.title"></b>
           </a>
           <ul class="list-inline">
-            <li ng-repeat="artist in e.artistArray">
-              <a ng-href="'http://www.last.fm/music/' + artist" ng-bind="::artist">
+            <li ng-repeat="artist in ::e.artistArray">
+              <a ng-href="{{'http://www.last.fm/music/' + artist}}" ng-bind="::artist">
               </a>
             </li>
           </ul>
