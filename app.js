@@ -17,14 +17,14 @@ lastFm.directive('miniCalendar', function() {
     },
     templateUrl: 'mini-calendar.html',
     controller: function($scope) {
-      $scope.datem = moment.utc($scope.date);
-      $scope.today = moment.utc().startOf('day');
+      $scope.datem = moment($scope.date);
+      $scope.today = moment().startOf('day');
       $scope.weeks = _.range(
-        moment.utc($scope.date).startOf('month').startOf('week').unix(),
-        moment.utc($scope.date).endOf('month').startOf('week').unix() + 1,
+        moment($scope.date).startOf('month').startOf('week').unix(),
+        moment($scope.date).endOf('month').startOf('week').unix() + 1,
         86400 * 7
       ).map(function(w) {
-        return _.range(w, w + 86400 * 7, 86400).map(moment.unix).map(moment.utc);
+        return _.range(w, w + 86400 * 7, 86400).map(moment.unix);
       });
 
       $scope.getDateClasses = function(d1, d2) {
