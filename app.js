@@ -107,7 +107,7 @@ lastFm.controller('LastFmCalendarController', ['$scope', '$routeParams', 'events
     return _.unique(_.union(venues, artists, titles));
   };
 
-  moment.lang('en', {
+  moment.locale('en', {
     calendar : {
       lastWeek : '[last] dddd [at] LT',
       lastDay : '[Yesterday at] LT',
