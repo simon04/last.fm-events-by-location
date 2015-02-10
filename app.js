@@ -4,9 +4,17 @@ var lastFm = angular.module('LastFm', ['ngRoute']);
 
 lastFm.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
-  when('/events/:location', {redirectTo: '/events/:location/20'}).
-  when('/events/:location/:distance', {templateUrl: 'events.html', controller: 'LastFmCalendarController'}).
-  otherwise({redirectTo: '/events/Innsbruck'});
+  when('/events/:location', {
+    redirectTo: '/events/:location/20'
+  }).when('/events/:location/:distance', {
+    templateUrl: 'events.html',
+    controller: 'LastFmCalendarController',
+    resolve: {
+      events: function(eventsService, $route) {
+        return eventsService.getEvents($route.current.params.location, $route.current.params.distance);
+      }
+    }
+  }).otherwise({redirectTo: '/events/Innsbruck'});
 }]);
 
 lastFm.directive('miniCalendar', function() {
@@ -65,26 +73,22 @@ lastFm.factory('eventsService', ['$http', function($http) {
   };
 }]);
 
-lastFm.controller('LastFmCalendarController', ['$scope', '$routeParams', 'eventsService', '$location', 'filterFilter', function($scope, $routeParams, eventsService, $location, filterFilter) {
+lastFm.controller('LastFmCalendarController', ['$scope', '$routeParams', 'events', '$location', 'filterFilter', function($scope, $routeParams, events, $location, filterFilter) {
 
   $scope.location = $routeParams.location;
   $scope.distance = parseInt($routeParams.distance);
 
-  eventsService.getEvents($scope.location, $scope.distance).then(function(events) {
-    return _.map(events, function(e) {
-      var a = e.artists.artist;
-      e.artistArray = Array.isArray(a) ? a : [a];
-      var mom = moment(e.startDate);
-      e.startDateFormatted = mom.format();
-      e.startDateHumanized = mom.format('ddd, YYYY-MM-DD');
-      e.startDateInDays = mom.diff(undefined, 'days');
-      e.thumb = e.image[2]['#text'];
-      return e;
-    });
-  }).then(function(events) {
-    $scope.events = events;
-    $scope.eventKeywords = $scope.filterList(events);
+  $scope.events = _.map(events, function(e) {
+    var a = e.artists.artist;
+    e.artistArray = Array.isArray(a) ? a : [a];
+    var mom = moment(e.startDate);
+    e.startDateFormatted = mom.format();
+    e.startDateHumanized = mom.format('ddd, YYYY-MM-DD');
+    e.startDateInDays = mom.diff(undefined, 'days');
+    e.thumb = e.image[2]['#text'];
+    return e;
   });
+  $scope.eventKeywords = $scope.filterList($scope.events);
 
   $scope.path = function(path) {
     $location.path(path);
