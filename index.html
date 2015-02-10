@@ -17,24 +17,20 @@
       time {
         white-space: nowrap;
       }
-      img.thumb {
-        max-width: none !important;
-        width: auto !important;
-      }
-      .crop {
-        height: 87px !important;
-        overflow: hidden;
-      }
-      .cancelled td {
+      .cancelled [class^="col-"] {
         text-decoration: line-through;
         opacity: 0.5;
       }
       .date-othermonth {
         opacity: 0.5;
       }
-      .date-sameday {
-        font-weight: bold;
-        background-color: rgba(213, 16, 7, 0.2) !important;;
+      .date-sameday .minical-day {
+        border-radius: 0.8em;
+        width: 1.6em;
+        border: 2px solid red;
+        margin: -2px;
+        display: inline-block;
+        text-align: center;
       }
       .date-today {
         color: #D51007;
@@ -42,8 +38,23 @@
       table.minical {
         margin-bottom: 0;
       }
-      table.minical td {
+      table.minical th, table.minical td {
         text-align: right;
+        padding: 0 0 1px 0 !important;
+      }
+      .row-striped:nth-child(odd) {
+        background-color: #f9f9f9;
+      }
+      .row-line {
+        border-top: 1px solid #ddd;
+        padding: 8px;
+        line-height: 20px;
+      }
+      .navbar-form .form-control {
+        width: 100%;
+      }
+      .row-condensed [class^="col-"] {
+        padding: 0;
       }
     </style>
   </head>

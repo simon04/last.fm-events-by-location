@@ -7,55 +7,77 @@
     </span>
   </div>
   <div class="container">
-    <form class="navbar-form form-search" ng-submit="path('/events/' + location + '/' + distance)">
-      <input ng-model="location" type="text" class="form-control search-query" placeholder="Location" title="Location">
-      <input ng-model="distance" type="text" class="form-control search-query" title="Distance (in kilometers)">
-      <button type="submit" class="btn btn-default">Update Events</button>
-      <input ng-model="filter" type="search" class="form-control search-query" placeholder="Filter" title="Filter" class="btn btn-default" list="filterList">
-      <button class="btn btn-default" ng-class="{active: !!minical}" ng-click="minical = !minical">MiniCal</button>
-      <button class="btn btn-default" ng-class="{active: !!minimap}" ng-click="minimap = !minimap">MiniMap</button>
+    <form class="navbar-form" ng-submit="path('/events/' + location + '/' + distance)">
+
+    <div class="row row-condensed">
+        <div class="col-xs-6 col-sm-4">
+          <input ng-model="location" type="text" class="form-control" placeholder="Location" title="Location">
+        </div>
+        <div class="col-xs-3 col-sm-1">
+          <input ng-model="distance" type="number" class="form-control" title="Distance (in kilometers)">
+        </div>
+        <div class="col-xs-3 visible-xs">
+          <button type="submit" class="btn btn-default form-control">Update</button>
+        </div>
+        <div class="col-sm-3 hidden-xs">
+          <button type="submit" class="btn btn-default form-control">Update Events</button>
+        </div>
+        <div class="col-sm-2 hidden-xs">
+          <button class="btn btn-default form-control" ng-class="{active: !!minical}" ng-click="minical = !minical">MiniCal</button>
+        </div>
+        <div class="col-sm-10 hidden-xs">
+          <input ng-model="filter" type="search" class="form-control" placeholder="Filter" title="Filter" class="btn btn-default" list="filterList">
+        </div>
+      </div>
     </form>
   </div>
 </div>
 <datalist id="filterList">
   <option ng-repeat="i in ::eventKeywords" ng-value="i"/>
 </datalist>
+
 <div class="container-fluid">
-  <table class="table table-striped">
-    <tr>
-      <th>Date</th>
-      <th>Venue</th>
-      <th></th>
-      <th>Event and Artists</th>
-    </tr>
-    <tr ng-repeat="e in filteredEvents" ng-class="{cancelled: e.cancelled == 1}">
-      <td ng-hide="minical">
-        <time ng-attr-datetime="::e.startDateFormatted" ng-bind="::e.startDateHumanized"></time>
-      </td>
-      <td ng-if="minical">
-        <div mini-calendar ng-date="::e.startDate"></div>
-      </td>
-      <td>
-        <img ng-if="minimap" ng-src="http://api.tiles.mapbox.com/v3/examples.map-vyofok3q/pin-s-star+c00({{e.venue.location['geo:point']['geo:long']}},{{e.venue.location['geo:point']['geo:lat']}})/{{e.venue.location['geo:point']['geo:long']}},{{e.venue.location['geo:point']['geo:lat']}},14/300x200.png" style="width:150px; height:100px;"></img>
-        <a ng-show="e.website" ng-href="::e.website" ng-bind="::e.venue.name"></a>
-        <span ng-show="!e.website" ng-bind="::e.venue.name"></span>
-      </td>
-      <td>
-        <div class="crop">
-          <img class="thumb" ng-src="{{::e.thumb}}">
+
+  <div class="row row-striped row-line" ng-repeat="e in filteredEvents" ng-class="{cancelled: e.cancelled == 1}">
+
+    <div class="col-xs-3 col-md-2">
+      <img class="img-responsive img-rounded" ng-src="{{::e.thumb}}">
+    </div>
+
+    <div class="col-xs-9 col-md-10">
+      <div class="row">
+
+        <div class="col-sm-4" ng-if="!minical">
+          <time ng-attr-datetime="::e.startDateFormatted" ng-bind="::e.startDateHumanized"></time>
+          <span class="badge" ng-pluralize count="e.startDateInDays" when="{0: 'today', 1: 'tomorrow', other: 'in {} days'}"></span>
         </div>
-      </td>
-      <td>
-        <a ng-href="::e.url">
-          <b ng-bind="::e.title"></b>
-        </a>
-        <ul>
-          <li ng-repeat="artist in e.artistArray">
-            <a ng-href="'http://www.last.fm/music/' + artist" ng-bind="::artist">
-            </a>
-          </li>
-        </ul>
-      </td>
-    </tr>
-  </table>
+
+        <div class="col-sm-4" ng-if="minical">
+          <div mini-calendar ng-date="::e.startDate"></div>
+        </div>
+
+        <div class="col-sm-3">
+          <!-- <span class="visible-xs-inline">@</span> -->
+          <a ng-if="e.website" ng-href="::e.website" ng-bind="::e.venue.name"></a>
+          <span ng-if="e.website" class="glyphicon glyphicon-new-window small"></span>
+          <span ng-if="!e.website" ng-bind="::e.venue.name"></span>
+        </div>
+
+        <div class="col-sm-5">
+          <a ng-href="::e.url">
+            <b ng-bind="::e.title"></b>
+          </a>
+          <ul class="list-inline">
+            <li ng-repeat="artist in e.artistArray">
+              <a ng-href="'http://www.last.fm/music/' + artist" ng-bind="::artist">
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
 </div>

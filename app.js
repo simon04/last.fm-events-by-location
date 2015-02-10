@@ -41,7 +41,7 @@ lastFm.directive('miniCalendar', function() {
 function LastFmCalendar($scope, $routeParams, $http, $location, filterFilter) {
 
   $scope.location = $routeParams.location;
-  $scope.distance = $routeParams.distance;
+  $scope.distance = parseInt($routeParams.distance);
 
   $http.get('http://ws.audioscrobbler.com/2.0/', {
     headers: {
@@ -62,8 +62,10 @@ function LastFmCalendar($scope, $routeParams, $http, $location, filterFilter) {
     return _.map(events, function(e) {
       var a = e.artists.artist;
       e.artistArray = Array.isArray(a) ? a : [a];
-      e.startDateFormatted = moment(e.startDate).format();
-      e.startDateHumanized = moment(e.startDate).calendar();
+      var mom = moment(e.startDate);
+      e.startDateFormatted = mom.format();
+      e.startDateHumanized = mom.format('ddd, YYYY-MM-DD');
+      e.startDateInDays = mom.diff(undefined, 'days');
       e.thumb = e.image[2]['#text'];
       return e;
     });
@@ -103,8 +105,8 @@ function LastFmCalendar($scope, $routeParams, $http, $location, filterFilter) {
       lastDay : '[Yesterday at] LT',
       sameDay : '[Today]',
       nextDay : '[Tomorrow]',
-      nextWeek : 'dddd',
-      sameElse : 'LL'
+      nextWeek : 'ddd, YYYY-MM-DD',
+      sameElse : 'ddd, YYYY-MM-DD'
     }
   });
 
