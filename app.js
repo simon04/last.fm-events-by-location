@@ -53,7 +53,7 @@ lastFm.directive('miniCalendar', function() {
 lastFm.factory('eventsService', ['$http', function($http) {
   return {
     getEvents: function(location, distance) {
-      return $http.get('http://ws.audioscrobbler.com/2.0/', {
+      return $http.get('https://ws.audioscrobbler.com/2.0/', {
         headers: {
           'Accept': 'application/json'
         },
