@@ -18,7 +18,6 @@ lastFm.config(['$routeProvider', function($routeProvider) {
 }]);
 
 lastFm.directive('miniCalendar', function() {
-  'use strict';
   return {
     scope: {
       date: '=ngDate'
@@ -79,10 +78,10 @@ lastFm.factory('eventKeywordsService', function() {
       _.mixin({
         pluckArray: function(obj, key) {
           return _.map(obj, function(value) {
-           return _.reduce(key, function(v, k) {
-            return v[k];
-          }, value);
-         });
+            return _.reduce(key, function(v, k) {
+              return v[k];
+            }, value);
+          });
         }
       });
 
@@ -121,13 +120,13 @@ lastFm.controller('LastFmCalendarController', ['$scope', '$routeParams', 'events
   });
 
   moment.locale('en', {
-    calendar : {
-      lastWeek : '[last] dddd [at] LT',
-      lastDay : '[Yesterday at] LT',
-      sameDay : '[Today]',
-      nextDay : '[Tomorrow]',
-      nextWeek : 'ddd, YYYY-MM-DD',
-      sameElse : 'ddd, YYYY-MM-DD'
+    calendar: {
+      lastWeek: '[last] dddd [at] LT',
+      lastDay: '[Yesterday at] LT',
+      sameDay: '[Today]',
+      nextDay: '[Tomorrow]',
+      nextWeek: 'ddd, YYYY-MM-DD',
+      sameElse: 'ddd, YYYY-MM-DD'
     }
   });
 
