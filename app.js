@@ -1,21 +1,6 @@
 'use strict';
 
-var lastFm = angular.module('LastFm', ['ngRoute']);
-
-lastFm.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.
-  when('/events/:location', {
-    redirectTo: '/events/:location/20'
-  }).when('/events/:location/:distance', {
-    templateUrl: 'events.html',
-    controller: 'LastFmCalendarController',
-    resolve: {
-      events: function(eventsService, $route) {
-        return eventsService.getEvents($route.current.params.location, $route.current.params.distance);
-      }
-    }
-  }).otherwise({redirectTo: '/events/Innsbruck'});
-}]);
+var lastFm = angular.module('LastFm', []);
 
 lastFm.directive('miniCalendar', function() {
   return {
@@ -93,31 +78,44 @@ lastFm.factory('eventKeywordsService', function() {
   };
 });
 
-lastFm.controller('LastFmCalendarController', ['$scope', '$routeParams', 'events', 'eventKeywordsService', '$location', 'filterFilter', function($scope, $routeParams, events, eventKeywordsService, $location, filterFilter) {
+lastFm.controller('LastFmCalendarController', function($scope, eventsService, eventKeywordsService, $location, filterFilter) {
 
-  $scope.location = $routeParams.location;
-  $scope.distance = parseInt($routeParams.distance);
-
-  $scope.events = _.map(events, function(e) {
-    var a = e.artists.artist;
-    e.artistArray = Array.isArray(a) ? a : [a];
-    var mom = moment(e.startDate);
-    e.startDateFormatted = mom.format();
-    e.startDateHumanized = mom.format('ddd, YYYY-MM-DD');
-    e.startDateInDays = mom.diff(undefined, 'days');
-    e.thumb = e.image[2]['#text'];
-    return e;
-  });
-
-  $scope.eventKeywords = eventKeywordsService.getKeywords($scope.events);
-
-  $scope.path = function(path) {
-    $location.path(path);
+  $scope.query = {
+    location: $location.search().location || 'Innsbruck',
+    distance: parseInt($location.search().distance || '20')
   };
 
-  $scope.$watch('events + filter', function() {
+  $scope.$watch('query', loadEvents, true);
+  $scope.$watch('query', updateLocation, true);
+  $scope.$watch('events + filter', filterEvents);
+
+  function loadEvents() {
+    eventsService.getEvents($scope.query.location, $scope.query.distance).then(function(events) {
+      $scope.error = undefined;
+      $scope.events = _.map(events, function(e) {
+        var a = e.artists.artist;
+        e.artistArray = Array.isArray(a) ? a : [a];
+        var mom = moment(e.startDate);
+        e.startDateFormatted = mom.format();
+        e.startDateHumanized = mom.format('ddd, YYYY-MM-DD');
+        e.startDateInDays = mom.diff(undefined, 'days');
+        e.thumb = e.image[2]['#text'];
+        return e;
+      });
+      $scope.eventKeywords = eventKeywordsService.getKeywords($scope.events);
+    }).catch(function(error) {
+      $scope.error = error;
+      $scope.events = [];
+    });
+  }
+
+  function updateLocation() {
+    $location.search($scope.query);
+  }
+
+  function filterEvents() {
     $scope.filteredEvents = filterFilter($scope.events, $scope.filter);
-  });
+  }
 
   moment.locale('en', {
     calendar: {
@@ -130,4 +128,4 @@ lastFm.controller('LastFmCalendarController', ['$scope', '$routeParams', 'events
     }
   });
 
-}]);
+});

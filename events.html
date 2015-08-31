@@ -7,20 +7,14 @@
     </span>
   </div>
   <div class="container">
-    <form class="navbar-form" ng-submit="path('/events/' + location + '/' + distance)">
+    <form class="navbar-form">
 
     <div class="row row-condensed">
         <div class="col-xs-6 col-sm-4">
-          <input ng-model="location" type="text" class="form-control" placeholder="Location" title="Location">
+          <input ng-model="query.location" ng-model-options="{debounce: 500}" type="text" class="form-control" placeholder="Location" title="Location">
         </div>
         <div class="col-xs-3 col-sm-1">
-          <input ng-model="distance" type="number" class="form-control" title="Distance (in kilometers)">
-        </div>
-        <div class="col-xs-3 visible-xs">
-          <button type="submit" class="btn btn-default form-control">Update</button>
-        </div>
-        <div class="col-sm-3 hidden-xs">
-          <button type="submit" class="btn btn-default form-control">Update Events</button>
+          <input ng-model="query.distance" ng-model-options="{debounce: 500}" type="number" class="form-control" title="Distance (in kilometers)">
         </div>
         <div class="col-sm-2 hidden-xs">
           <button class="btn btn-default form-control" ng-class="{active: !!minical}" ng-click="minical = !minical">MiniCal</button>
@@ -37,6 +31,11 @@
 </datalist>
 
 <div class="container-fluid">
+
+  <div class="alert alert-danger" role="alert" data-ng-show="error">
+    <strong>Error while loading events …</strong>
+    <pre>{{error}}</pre>
+  </div>
 
   <div class="row row-striped row-line" ng-repeat="e in filteredEvents" ng-class="{cancelled: e.cancelled == 1}">
 
